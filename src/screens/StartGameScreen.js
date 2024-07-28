@@ -1,8 +1,34 @@
-import React from 'react';
-import {StyleSheet, View, TextInput} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, View, TextInput, Alert} from 'react-native';
 import PrimaryButton from '../componenets/PrimaryButton';
 
 function StartGameScreen() {
+  const [enteredNumber, setEnteredNumber] = useState('');
+
+  function numberInputHandler(enteredText) {
+    setEnteredNumber(enteredText);
+  }
+
+  function resetInputHandler() {
+    setEnteredNumber('');
+  }
+
+  function confirmInputHandler() {
+    const choosenNumber = parseInt(enteredNumber); // This would fail if the the string is not convertable to number
+    if (isNaN(choosenNumber) || choosenNumber <= 0 || choosenNumber > 99) {
+      // show alert
+      // alert contain, first 'title, 'message', button that would be involve
+      Alert.alert(
+        'Invalid Number',
+        'Number has to be a number between 1 and 99',
+        [{text: 'Okay', style: 'destructive', onPress: resetInputHandler}],
+      );
+
+      console.log("valid number");
+
+      return;
+    }
+  }
   return (
     <View style={styles.inputContainer}>
       <TextInput
@@ -11,14 +37,16 @@ function StartGameScreen() {
         keyboardType="number-pad"
         autoCapitalize="none"
         autoCorrect={true}
+        onChangeText={numberInputHandler}
+        value={enteredNumber}
       />
 
       <View style={styles.buttonsContainer}>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Reset</PrimaryButton>
+          <PrimaryButton onPress={resetInputHandler}>Reset</PrimaryButton>
         </View>
         <View style={styles.buttonContainer}>
-          <PrimaryButton>Confirm</PrimaryButton>
+          <PrimaryButton onPress={confirmInputHandler}>Confirm</PrimaryButton>
         </View>
       </View>
     </View>
@@ -54,8 +82,8 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: 'row',
   },
-  buttonContainer:{
-    flex:1
-  }
+  buttonContainer: {
+    flex: 1,
+  },
 });
 export default StartGameScreen;
